@@ -1,6 +1,7 @@
 package com.example.admin.myapplication;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.ContactsContract;
@@ -55,11 +56,9 @@ public class MainActivity extends AppCompatActivity implements Handler.Callback 
                 switch (code[1]) {
                     case "1":
                         ((ProgressBar) findViewById(id)).setMax(Integer.valueOf(code[2]));
-                        System.out.println("Max progressBar " + code[2]);
                         break;
                     case "2":
                         ((ProgressBar) findViewById(id)).setProgress(Integer.valueOf(code[2]));
-                        //System.out.println("progress bar progress"+code[2]);
                         break;
                 }
 
@@ -69,16 +68,47 @@ public class MainActivity extends AppCompatActivity implements Handler.Callback 
     }
 
     public void buttonClickThreadPool(View view) {
-        ThreadPoolExecutor mThreadPoolExecutor = new ThreadPoolExecutor(POOL_SIZE, POOL_SIZE, KEEP_ALIVE_TIME, KEEP_ALIVE_TIME_UNIT, new LinkedBlockingDeque<Runnable>());
-        mThreadPoolExecutor.execute(new ProgressTask((TextView) findViewById(R.id.tvThread1), (TextView) findViewById(R.id.tvTime1), (ProgressBar) findViewById(R.id.pb1), handler));
-        mThreadPoolExecutor.execute(new ProgressTask((TextView) findViewById(R.id.tvThread2), (TextView) findViewById(R.id.tvTime2), (ProgressBar) findViewById(R.id.pb2), handler));
-        mThreadPoolExecutor.execute(new ProgressTask((TextView) findViewById(R.id.tvThread3), (TextView) findViewById(R.id.tvTime3), (ProgressBar) findViewById(R.id.pb3), handler));
-        mThreadPoolExecutor.execute(new ProgressTask((TextView) findViewById(R.id.tvThread4), (TextView) findViewById(R.id.tvTime4), (ProgressBar) findViewById(R.id.pb4), handler));
+        initProgressBars();
+        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(POOL_SIZE, POOL_SIZE, KEEP_ALIVE_TIME, KEEP_ALIVE_TIME_UNIT, new LinkedBlockingDeque<Runnable>());
+        threadPoolExecutor.execute(new ProgressTask((TextView) findViewById(R.id.tvThread1), (TextView) findViewById(R.id.tvTime1), (ProgressBar) findViewById(R.id.pb1), handler));
+        threadPoolExecutor.execute(new ProgressTask((TextView) findViewById(R.id.tvThread2), (TextView) findViewById(R.id.tvTime2), (ProgressBar) findViewById(R.id.pb2), handler));
+        threadPoolExecutor.execute(new ProgressTask((TextView) findViewById(R.id.tvThread3), (TextView) findViewById(R.id.tvTime3), (ProgressBar) findViewById(R.id.pb3), handler));
+        threadPoolExecutor.execute(new ProgressTask((TextView) findViewById(R.id.tvThread4), (TextView) findViewById(R.id.tvTime4), (ProgressBar) findViewById(R.id.pb4), handler));
     }
 
+
+
     public void asyncSerial(View view) {
+        initProgressBars();
+        AsyncTask asyncTask = new AsyncBarsTask(new ProgressTask((TextView) findViewById(R.id.tvThread1), (TextView) findViewById(R.id.tvTime1), (ProgressBar) findViewById(R.id.pb1), null));
+        asyncTask.execute(1);
+        asyncTask = new AsyncBarsTask(new ProgressTask((TextView) findViewById(R.id.tvThread2), (TextView) findViewById(R.id.tvTime2), (ProgressBar) findViewById(R.id.pb2), null));
+        asyncTask.execute(1);
+        asyncTask = new AsyncBarsTask(new ProgressTask((TextView) findViewById(R.id.tvThread3), (TextView) findViewById(R.id.tvTime3), (ProgressBar) findViewById(R.id.pb3), null));
+        asyncTask.execute(1);
+        asyncTask = new AsyncBarsTask(new ProgressTask((TextView) findViewById(R.id.tvThread4), (TextView) findViewById(R.id.tvTime4), (ProgressBar) findViewById(R.id.pb4), null));
+        asyncTask.execute(1);
+
     }
 
     public void asyncParallel(View view) {
+        initProgressBars();
+        AsyncTask asyncTask = new AsyncBarsTask(new ProgressTask((TextView) findViewById(R.id.tvThread1), (TextView) findViewById(R.id.tvTime1), (ProgressBar) findViewById(R.id.pb1), null));
+        asyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        asyncTask = new AsyncBarsTask(new ProgressTask((TextView) findViewById(R.id.tvThread2), (TextView) findViewById(R.id.tvTime2), (ProgressBar) findViewById(R.id.pb2), null));
+        asyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        asyncTask = new AsyncBarsTask(new ProgressTask((TextView) findViewById(R.id.tvThread3), (TextView) findViewById(R.id.tvTime3), (ProgressBar) findViewById(R.id.pb3), null));
+        asyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        asyncTask = new AsyncBarsTask(new ProgressTask((TextView) findViewById(R.id.tvThread4), (TextView) findViewById(R.id.tvTime4), (ProgressBar) findViewById(R.id.pb4), null));
+        asyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+
+    }
+
+    private void initProgressBars() {
+        ((ProgressBar) findViewById(R.id.pb1)).setProgress(0);
+        ((ProgressBar) findViewById(R.id.pb2)).setProgress(0);
+        ((ProgressBar) findViewById(R.id.pb3)).setProgress(0);
+        ((ProgressBar) findViewById(R.id.pb4)).setProgress(0);
     }
 }

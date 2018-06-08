@@ -37,7 +37,6 @@ public class ProgressTask implements Runnable {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            i++;
         }
         HandlerUtils.with(handler).sendMessage(""+tvTime.getId()+"&Time : "+time+"/"+time);
         HandlerUtils.with(handler).sendMessage(""+bar.getId()+"&2&"+time);
